@@ -2,22 +2,23 @@ import {
   Button,
   Dialog,
   Icon,
-  Input,
   Text,
   makeStyles,
-  useTheme,
+  useTheme
 } from "@rneui/themed";
+import _ from "lodash";
+import { Fragment, useEffect, useState } from "react";
 import {
-  View,
-  ScrollView,
   Dimensions,
-  PanResponder,
   SafeAreaView,
-  TouchableWithoutFeedback,
+  ScrollView,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  View
 } from "react-native";
-import { useState, useEffect, Fragment } from "react";
-import { trpc } from "../../../../src/utils/trpc";
+import {
+  PanGestureHandler
+} from "react-native-gesture-handler";
 import Animated, {
   WithSpringConfig,
   runOnJS,
@@ -26,16 +27,10 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import {
-  PanGestureHandler,
-  LongPressGestureHandler,
-} from "react-native-gesture-handler";
-import { Picker } from "@react-native-picker/picker";
-import _ from "lodash";
-import { mapBreakpoint } from "../../../../src/utils/responsive";
-import { inferAsyncReturnType, inferProcedureOutput } from "@trpc/server";
 import { useToast } from "../../../../src/providers/Toast";
 import { extractError } from "../../../../src/utils/helper";
+import { mapBreakpoint } from "../../../../src/utils/responsive";
+import { trpc } from "../../../../src/utils/trpc";
 import { Device } from "../../../../src/utils/types";
 
 const areaWidth = Dimensions.get("window").width;

@@ -29,15 +29,7 @@ const main = async () => {
 
   const context = t.createContext(client);
 
-  const whitelist = ["http://localhost:3001"];
-
   const corsOpts = {
-    // origin(
-    //   origin: string,
-    //   callback: (err: Error | null, allow?: boolean) => void
-    // ) {
-    //   callback(null, _.includes(whitelist, origin));
-    // },
     origin: "*",
     credentials: true,
   } as CorsOptions;
@@ -45,13 +37,8 @@ const main = async () => {
   const cookieOpts: CookieOptions = {
     maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
     httpOnly: false,
-    domain: "localhost",
+    domain: "mapuark",
     sameSite: "lax" as const,
-    // ...(isProduction && {
-    //   sameSite: 'lax',
-    //   secure: true,
-    //   domain: `.${host}`,
-    // }),
   };
 
   app.set("trust proxy", 1);

@@ -1,43 +1,18 @@
+import { DeviceStatus } from "@app/commons";
 import {
-  Button,
-  Dialog,
-  Icon,
-  Input,
   Text,
   makeStyles,
-  useTheme,
+  useTheme
 } from "@rneui/themed";
+import { Fragment } from "react";
 import {
-  View,
-  ScrollView,
   Dimensions,
-  PanResponder,
   SafeAreaView,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
+  View
 } from "react-native";
-import { useState, useEffect, Fragment } from "react";
-import { trpc } from "../../../../src/utils/trpc";
-import Animated, {
-  WithSpringConfig,
-  runOnJS,
-  useAnimatedGestureHandler,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
-import {
-  PanGestureHandler,
-  LongPressGestureHandler,
-} from "react-native-gesture-handler";
-import { Picker } from "@react-native-picker/picker";
-import _ from "lodash";
 import { mapBreakpoint } from "../../../../src/utils/responsive";
-import { inferAsyncReturnType, inferProcedureOutput } from "@trpc/server";
-import { useToast } from "../../../../src/providers/Toast";
-import { extractError } from "../../../../src/utils/helper";
+import { trpc } from "../../../../src/utils/trpc";
 import { Area, Device } from "../../../../src/utils/types";
-import { DeviceStatus } from "@app/commons";
 
 const areaWidth = Dimensions.get("window").width;
 const areaHeight = Dimensions.get("window").height / 1.8;

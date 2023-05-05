@@ -6,3 +6,4 @@ dist
 env.hpp
 .turbo
 temp
+client/android
