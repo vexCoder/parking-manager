@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "prod": "turbo run build prod",
+    "prod": "turbo run build prod --no-cache",
     "lint": "turbo run lint",
     "test": "turbo run test",
     "prisma": "yarn workspace @app/server prisma",
