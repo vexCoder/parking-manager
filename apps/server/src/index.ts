@@ -64,8 +64,8 @@ const main = async () => {
     })
   );
 
-  app.listen(3002, () => {
-    console.log("Server started on port 3002");
+  app.listen(3100, () => {
+    console.log("Server started on port 3100");
   });
 };
 

@@ -64,7 +64,7 @@ export default function Layout() {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "http://192.168.1.65:3002/trpc",
+          url: "http://mapuark.site/trpc",
           // You can pass any HTTP headers you wish here
           async headers() {
             return {
