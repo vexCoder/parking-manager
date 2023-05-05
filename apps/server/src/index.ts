@@ -64,6 +64,10 @@ const main = async () => {
     })
   );
 
+  app.get('/test', (req, res) => {
+    res.send('Server is up and running!')
+  })
+
   app.listen(3100, () => {
     console.log("Server started on port 3100");
   });
