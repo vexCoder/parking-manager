@@ -1,0 +1,12 @@
+{
+    "parserOptions": {
+        "project": "./tsconfig.json"
+    },
+    "ignorePatterns": [
+        "**/*.d.*"
+    ],
+    "rules": {
+        "no-console": "off",
+        "no-plusplus": "off"
+    }
+}

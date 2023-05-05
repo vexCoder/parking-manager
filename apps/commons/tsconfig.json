@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "es2021",
+        "lib": [
+            "es2021"
+        ],
+        "skipLibCheck": true,
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        "outDir": "./dist",
+        "declaration": true
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": []
+}

@@ -1,0 +1,70 @@
+// Prisma schema for sqlite
+generator gen {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../../.build/dev.db"
+}
+
+model User {
+    id          Int      @id @default(autoincrement())
+    username    String   @unique
+    password    String
+    reference   String   @unique
+    name        String?
+    type        String // enum [ADMIN, USER]
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
+
+model Area {
+    id          Int      @id @default(autoincrement())
+    name        String
+    width       Int
+    height      Int
+    lots        Lot[]
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
+
+model Lot {
+    id          Int      @id @default(autoincrement())
+    area        Area     @relation(fields: [areaId], references: [id])
+    areaId      Int     
+    startX      Float
+    startY      Float
+    endX        Float
+    endY        Float
+    device      Device[]
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
+
+model Device {
+    id          Int      @id @default(autoincrement())
+    deviceID    Int     
+    name        String
+    lot         Lot?     @relation(fields: [lotId], references: [id])
+    lotId       Int?
+    status      String   // enum [VACANT, OCCUPIED]
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
+
+model Log {
+    id          Int      @id @default(autoincrement())
+    reference   Int
+    type        String  // enum [USER, DEVICE]
+    action      String  // enum [ENTER, EXIT, VACANT, OCCUPIED]
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt   DateTime
+}
