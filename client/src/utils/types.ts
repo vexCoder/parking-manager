@@ -10,3 +10,5 @@ export type Device = Omit<inferProcedureOutput<AppRouter["device"]["getDevices"]
 export type Area = Exclude<inferProcedureOutput<AppRouter["parking"]["getArea"]>, null>
 
 export type User = inferProcedureOutput<AppRouter["user"]["users"]>[number];
+
+export type LogStat = inferProcedureOutput<AppRouter["user"]["getLogs"]>;

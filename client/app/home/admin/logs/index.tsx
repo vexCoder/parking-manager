@@ -18,7 +18,10 @@ export default function Index() {
   const _colleges = trpc.user.colleges.useQuery();
 
 
-  const logs = _logs.data ?? [];
+  const logs = _logs.data || {
+    vacancy: [],
+    entries: []
+  };
 
   const dimHeight = Dimensions.get("window").height;
   const approval = _approval.data;
@@ -31,55 +34,9 @@ export default function Index() {
 
   const colleges = collegesNoColors.map((college, i) => ({
     ...college,
-    color: `#${Math.floor(Math.random()*16777215).toString(16)}`,
+    color: `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`,
   }))
 
-  const offset = 2;
-
-  // time ranges
-  const ranges = new Array(24 / offset)
-    .fill(0)
-    .map((_, i) => i * offset)
-    .map((hour) => {
-      return {
-        start: hour,
-        end: hour + offset,
-        label: `${hour === 0 ? 12 : hour > 12 ? hour - 12 : hour}${
-          hour < 12 ? "am" : "pm"
-        }`,
-      };
-    });
-
-  const values = ranges.map((range) => {
-    const logs = _logs.data?.filter((log) => {
-      const hour = moment(log.createdAt).hour();
-      return (
-        hour >= range.start && hour < range.end && log.type === LogType.USER
-      );
-    });
-
-    return {
-      label: range.label,
-      value: logs?.length ?? 0,
-    };
-  });
-
-  const valuesVacancy = ranges.map((range) => {
-    const logs = _logs.data?.filter((log) => {
-      const hour = moment(log.createdAt).hour();
-      return (
-        hour >= range.start &&
-        hour < range.end &&
-        log.type === LogType.DEVICE &&
-        log.action === LogAction.VACANT
-      );
-    });
-
-    return {
-      label: range.label,
-      value: logs?.length ?? 0,
-    };
-  });
 
   return (
     <>
@@ -157,10 +114,10 @@ export default function Index() {
                 data={{
                   datasets: [
                     {
-                      data: values.map((v) => v.value),
+                      data: logs.vacancy.map((v) => v.value),
                     },
                   ],
-                  labels: values.map((v) => v.label),
+                  labels: logs.vacancy.map((v) => v.label),
                 }}
                 width={Dimensions.get("window").width + 40}
                 yAxisLabel=""
@@ -212,10 +169,10 @@ export default function Index() {
                 data={{
                   datasets: [
                     {
-                      data: valuesVacancy.map((v) => v.value),
+                      data: logs.entries.map((v) => v.value),
                     },
                   ],
-                  labels: valuesVacancy.map((v) => v.label),
+                  labels: logs.entries.map((v) => v.label),
                 }}
                 width={Dimensions.get("window").width + 40}
                 yAxisLabel=""

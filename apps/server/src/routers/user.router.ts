@@ -167,14 +167,12 @@ export const userRouter = t.router({
     const logs = await ctx.client.log.findMany({});
     const selected = moment(input, "X");
 
-    console.log(selected.format("YYYY-MM-DD HH:mm:ss"))
-
     const mappedLogs = await pMap(logs, async (log) => {
       const isBetween = moment(log.createdAt).isBetween(
         selected.clone().startOf("day"),
         selected.clone().endOf("day"),
-        'day',
-        '[]'
+        "day",
+        "[]"
       );
 
       if (!isBetween) {
@@ -214,7 +212,60 @@ export const userRouter = t.router({
       return null;
     });
 
-    return mappedLogs.filter((log) => log !== null) as Log[];
+    const filtered = mappedLogs.filter((log) => log !== null) as Log[];
+
+    const offset = 2;
+
+    // time ranges
+    const ranges = new Array(24 / offset)
+      .fill(0)
+      .map((_, i) => i * offset)
+      .map((hour) => {
+        return {
+          start: hour,
+          end: hour + offset,
+          label: `${hour === 0 ? 12 : hour > 12 ? hour - 12 : hour}${
+            hour < 12 ? "am" : "pm"
+          }`,
+        };
+      });
+
+    const values = ranges.map((range) => {
+      const logs = filtered.filter((log) => {
+        const hour = moment(log.createdAt).hour();
+        return (
+          hour >= range.start && hour < range.end && log.type === LogType.USER
+        );
+      });
+
+      return {
+        label: range.label,
+        value: logs?.length ?? 0,
+      };
+    });
+
+    const valuesVacancy = ranges.map((range) => {
+      const logs = filtered.filter((log) => {
+        const hour = moment(log.createdAt).hour();
+        console.log(hour);
+        return (
+          hour >= range.start &&
+          hour < range.end &&
+          log.type === LogType.DEVICE &&
+          log.action === LogAction.VACANT
+        );
+      });
+
+      return {
+        label: range.label,
+        value: logs?.length ?? 0,
+      };
+    });
+
+    return {
+      vacancy: valuesVacancy,
+      entries: values,
+    };
   }),
   approvalStats: adminProcedure.query(async ({ input, ctx }) => {
     const users = await ctx.client.user.findMany();
@@ -259,8 +310,11 @@ export const userRouter = t.router({
   colleges: adminProcedure.query(async ({ input, ctx }) => {
     const users = await ctx.client.user.findMany({});
 
-    const mapped = _.groupBy(users.filter(v => v.type === UserType.USER), (v) => v.college);
+    const mapped = _.groupBy(
+      users.filter((v) => v.type === UserType.USER),
+      (v) => v.college
+    );
 
     return mapped as Record<string, User[]>;
-  })
+  }),
 });
