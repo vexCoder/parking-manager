@@ -12,6 +12,7 @@ import { useToast } from "../src/providers/Toast";
 import LogoSvg from "../src/svg/LogoSvg";
 import { trpc } from "../src/utils/trpc";
 import { mapBreakpoint } from "../src/utils/responsive";
+import { extractError } from "../src/utils/helper";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -89,15 +90,22 @@ export default function Index() {
     }
 
     try {
-      const res = await login.mutateAsync({
+      await login.mutateAsync({
         username: state.username,
         password: state.password,
+      }, {
+        onError: (err) => {
+          console.log('error', err)
+          toast.error(extractError(err));
+        },
+        onSuccess: async (data) => {
+          console.log('success', data)
+          await AsyncStorage.setItem("@jwt", data);
+    
+          utils.user.status.invalidate();
+          toast.success("Login success");
+        }
       });
-
-      await AsyncStorage.setItem("@jwt", res);
-
-      utils.user.status.invalidate();
-      toast.success("Login success");
     } catch (error) {
       toast.error((error as Error).message);
     }

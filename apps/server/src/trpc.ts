@@ -27,7 +27,7 @@ export const middleware = t.middleware;
 export const router = t.router;
 export const procedure = t.procedure;
 
-type Middleware = ReturnType<typeof middleware>
+export type Middleware = ReturnType<typeof middleware>
 
 export const inject = (...middlewares: Middleware[]) => {
     let newProcedure = procedure;

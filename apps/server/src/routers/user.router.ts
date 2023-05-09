@@ -5,6 +5,9 @@ import { LogAction, LogType, UserType } from "@app/commons";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import pMap from "p-map";
+import moment from "moment";
+import { Log, User } from "@prisma/client";
+import _ from "lodash";
 
 const registerSchema = z
   .object({
@@ -16,6 +19,7 @@ const registerSchema = z
       required_error: "Type is required",
     }),
     name: z.string({ required_error: "Name is required" }),
+    college: z.string({ required_error: "College is required" }),
   })
   .required();
 
@@ -44,6 +48,7 @@ export const userRouter = t.router({
         ...input,
         password: hashedPassword,
         reference,
+        approved: false,
       },
     });
 
@@ -62,6 +67,10 @@ export const userRouter = t.router({
 
       if (!user) {
         throw new Error("User not found");
+      }
+
+      if (!user.approved) {
+        throw new Error("User not yet approved");
       }
 
       const valid = await argon2.verify(user.password, input.password);
@@ -154,45 +163,104 @@ export const userRouter = t.router({
 
     return user;
   }),
-  getLogs: adminProcedure.query(async ({ input, ctx }) => {
+  getLogs: adminProcedure.input(z.number()).query(async ({ input, ctx }) => {
     const logs = await ctx.client.log.findMany({});
-    
-    const mappedLogs = await pMap(
-      logs,
-      async (log) => {
-        if(log.type === LogType.USER) {
-          const user = await ctx.client.user.findUnique({
-            where: {
-              id: log.reference,
-            },
-          });
+    const selected = moment(input, "X");
 
-          if(!user) return null;
+    console.log(selected.format("YYYY-MM-DD HH:mm:ss"))
 
-          return {
-            ...log,
-            user: user.name,
-          }
-        }
-        
-        if(log.type === LogType.DEVICE) {
-          const device = await ctx.client.device.findUnique({
-            where: {
-              id: log.reference,
-            },
-          });
+    const mappedLogs = await pMap(logs, async (log) => {
+      const isBetween = moment(log.createdAt).isBetween(
+        selected.clone().startOf("day"),
+        selected.clone().endOf("day"),
+        'day',
+        '[]'
+      );
 
-          if(!device) return null;
-
-          return {
-            ...log,
-            device: device.deviceID,
-          }
-        }
-
+      if (!isBetween) {
         return null;
       }
-    )
-    return logs;
+
+      if (log.type === LogType.USER) {
+        const user = await ctx.client.user.findUnique({
+          where: {
+            id: log.reference,
+          },
+        });
+
+        if (!user) return null;
+
+        return {
+          ...log,
+          user: user.name,
+        };
+      }
+
+      if (log.type === LogType.DEVICE) {
+        const device = await ctx.client.device.findUnique({
+          where: {
+            id: log.reference,
+          },
+        });
+
+        if (!device) return null;
+
+        return {
+          ...log,
+          device: device.deviceID,
+        };
+      }
+
+      return null;
+    });
+
+    return mappedLogs.filter((log) => log !== null) as Log[];
   }),
+  approvalStats: adminProcedure.query(async ({ input, ctx }) => {
+    const users = await ctx.client.user.findMany();
+
+    const approved = users.filter((user) => user.approved).length;
+    const pending = users.filter((user) => !user.approved).length;
+
+    return {
+      approved,
+      pending,
+    };
+  }),
+  users: adminProcedure.query(async ({ input, ctx }) => {
+    const users = await ctx.client.user.findMany({});
+
+    return users;
+  }),
+  approve: adminProcedure.input(z.number()).mutation(async ({ input, ctx }) => {
+    const { client } = ctx;
+
+    const user = await client.user.findFirst({
+      where: {
+        id: input,
+      },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const updatedUser = await client.user.update({
+      where: {
+        id: input,
+      },
+      data: {
+        approved: true,
+      },
+    });
+
+    return updatedUser;
+  }),
+  colleges: adminProcedure.query(async ({ input, ctx }) => {
+    const users = await ctx.client.user.findMany({});
+
+    const mapped = _.groupBy(users.filter(v => v.type === UserType.USER), (v) => v.college);
+
+    return mapped as Record<string, User[]>;
+  })
 });

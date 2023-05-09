@@ -157,8 +157,7 @@ const Lot = ({ index, lot, area, device }: LotProps) => {
   const _devices = trpc.device.status.useQuery(
     { deviceID: lot.device },
     {
-      enabled: !!lot.device,
-      refetchInterval: 1000,
+      refetchInterval: !!lot.device ? 1000 : false,
     }
   );
 

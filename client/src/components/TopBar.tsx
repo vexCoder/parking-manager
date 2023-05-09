@@ -8,7 +8,7 @@ import { trpc } from "../utils/trpc";
 type Props = {};
 const TopBar = (props: Props) => {
   const { theme } = useTheme();
-  const router = useRouter()
+  const router = useRouter();
 
   const ctx = trpc.useContext();
 
@@ -16,7 +16,11 @@ const TopBar = (props: Props) => {
     await AsyncStorage.setItem("@jwt", "");
     router.replace("/");
     ctx.user.status.invalidate();
-    ctx.user.status.reset(undefined, {})
+    ctx.user.status.reset(undefined, {});
+  };
+
+  const handleGraph = () => {
+    router.push("/home/admin/logs");
   };
 
   return (
@@ -44,9 +48,14 @@ const TopBar = (props: Props) => {
       >
         Mapuark
       </Text>
-      <TouchableOpacity onPress={logout}>
-        <Icon name="logout" type="material-icons" color="white" />
-      </TouchableOpacity>
+      <View style={{display: 'flex', flexDirection: 'row', gap: 20, paddingRight: 5}}>
+        <TouchableOpacity onPress={handleGraph}>
+          <Icon name="bar-graph" type="entypo" color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={logout}>
+          <Icon name="logout" type="material-icons" color="white" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

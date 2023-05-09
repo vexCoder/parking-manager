@@ -14,6 +14,8 @@ model User {
     password    String
     reference   String   @unique
     name        String?
+    college     String?
+    approved    Boolean  @default(false)
     type        String // enum [ADMIN, USER]
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt

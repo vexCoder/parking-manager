@@ -13,11 +13,11 @@ export default function Layout() {
       </SafeAreaView>
       <BottomBar
         right={{
-          icon: "list",
+          icon: "user-plus",
           iconType: "feather",
-          text: "Logs",
+          text: "Approve",
           handlePress: () => {
-            router.push("/home/admin/logs");
+            router.push("/home/admin/users");
           },
         }}
         left={{

@@ -11,7 +11,7 @@ import AuthGuard from "../src/providers/AuthGuard";
 import { PixelRatio } from "react-native";
 import { mapBreakpoint } from "../src/utils/responsive";
 
-let STANDARD_HEIGHT = [50, 50, 60]
+let STANDARD_HEIGHT = [45, 45, 60]
 
 const theme = createTheme({
   components: {
@@ -65,6 +65,7 @@ export default function Layout() {
       links: [
         httpBatchLink({
           url: "http://mapuark.site/trpc",
+          // url: "http://192.168.1.65:3100/trpc",
           // You can pass any HTTP headers you wish here
           async headers() {
             return {

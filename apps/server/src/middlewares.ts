@@ -60,6 +60,10 @@ export const authenticate = t.middleware(async (opts) => {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
+  if(!user.approved) {
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "Your account is not yet approved" });
+  }
+
   const res = await opts.next({
     ctx: {
       authenticatedUser: user
