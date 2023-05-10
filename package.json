@@ -44,7 +44,6 @@
   },
   "resolutions": {
     "metro": "0.76.0",
-    "metro-resolver": "0.76.0",
-    "react-native-svg": "13.4.0"
+    "metro-resolver": "0.76.0"
   }
 }

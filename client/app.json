@@ -1,11 +1,11 @@
 {
   "expo": {
     "scheme": "myapp",
-    "name": "client",
-    "slug": "client",
+    "name": "Mapuark",
+    "slug": "mapuark",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/mapuark.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -24,7 +24,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/mapuark.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
@@ -37,6 +37,15 @@
         "expo-barcode-scanner",
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true,
+            "extraProguardRules": "-keep public class com.horcrux.svg.** {*;}"
+          }
         }
       ]
     ],

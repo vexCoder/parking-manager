@@ -5,18 +5,17 @@ import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { useState } from "react";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { mapBreakpoint } from "../../../../src/utils/responsive";
-import moment from "moment";
 import { BarChart, PieChart } from "react-native-chart-kit";
-import { LogAction, LogType } from "@app/commons";
 
 export default function Index() {
   const { theme } = useTheme();
   const [open, toggleOpen] = useState(false);
   const [date, setDate] = useState(new Date());
-  const _logs = trpc.user.getLogs.useQuery(moment(date).unix());
+  // date to unix
+  const unix = date.getTime() / 1000;
+  const _logs = trpc.user.getLogs.useQuery(unix);
   const _approval = trpc.user.approvalStats.useQuery();
   const _colleges = trpc.user.colleges.useQuery();
-
 
   const logs = _logs.data || {
     vacancy: [],
@@ -114,10 +113,10 @@ export default function Index() {
                 data={{
                   datasets: [
                     {
-                      data: logs.vacancy.map((v) => v.value),
+                      data: logs.entries.map((v) => v.value),
                     },
                   ],
-                  labels: logs.vacancy.map((v) => v.label),
+                  labels: logs.entries.map((v) => v.label),
                 }}
                 width={Dimensions.get("window").width + 40}
                 yAxisLabel=""
@@ -169,10 +168,10 @@ export default function Index() {
                 data={{
                   datasets: [
                     {
-                      data: logs.entries.map((v) => v.value),
+                      data: logs.vacancy.map((v) => v.value),
                     },
                   ],
-                  labels: logs.entries.map((v) => v.label),
+                  labels: logs.vacancy.map((v) => v.label),
                 }}
                 width={Dimensions.get("window").width + 40}
                 yAxisLabel=""

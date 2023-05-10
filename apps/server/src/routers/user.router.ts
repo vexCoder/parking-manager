@@ -234,7 +234,10 @@ export const userRouter = t.router({
       const logs = filtered.filter((log) => {
         const hour = moment(log.createdAt).hour();
         return (
-          hour >= range.start && hour < range.end && log.type === LogType.USER
+          hour >= range.start &&
+          hour < range.end &&
+          log.type === LogType.USER &&
+          log.action === LogAction.ENTER
         );
       });
 

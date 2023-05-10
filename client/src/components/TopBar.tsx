@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { trpc } from "../utils/trpc";
+import { UserType } from "@app/commons";
 
 type Props = {};
 const TopBar = (props: Props) => {
@@ -11,7 +12,11 @@ const TopBar = (props: Props) => {
   const router = useRouter();
 
   const ctx = trpc.useContext();
+  const _status = trpc.user.status.useQuery(undefined, {
+    retry: false,
+  });
 
+  const status = _status.data;
   const logout = async () => {
     await AsyncStorage.setItem("@jwt", "");
     router.replace("/");
@@ -22,6 +27,8 @@ const TopBar = (props: Props) => {
   const handleGraph = () => {
     router.push("/home/admin/logs");
   };
+
+  if (!status) return null;
 
   return (
     <View
@@ -48,10 +55,19 @@ const TopBar = (props: Props) => {
       >
         Mapuark
       </Text>
-      <View style={{display: 'flex', flexDirection: 'row', gap: 20, paddingRight: 5}}>
-        <TouchableOpacity onPress={handleGraph}>
-          <Icon name="bar-graph" type="entypo" color="white" />
-        </TouchableOpacity>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: 20,
+          paddingRight: 5,
+        }}
+      >
+        {status.type === UserType.ADMIN && (
+          <TouchableOpacity onPress={handleGraph}>
+            <Icon name="bar-graph" type="entypo" color="white" />
+          </TouchableOpacity>
+        )}
         <TouchableOpacity onPress={logout}>
           <Icon name="logout" type="material-icons" color="white" />
         </TouchableOpacity>
