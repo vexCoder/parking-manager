@@ -68,13 +68,13 @@ export const deviceRouter = t.router({
 
       return device;
     }),
-  status: protectedProcedure
+  status: procedure
     .input(z.object({ deviceID: z.number().optional() }))
     .query(async ({ input, ctx }) => {
       const { client } = ctx;
 
       if(!input.deviceID) {
-        throw new Error("Device ID is required");
+        return undefined
       }
 
       const device = await client.device.findFirst({
@@ -82,6 +82,7 @@ export const deviceRouter = t.router({
           id: input.deviceID,
         },
       });
+      console.log(device)
 
       if (!device) {
         throw new Error("Device not found");
