@@ -5,12 +5,12 @@
     "slug": "mapuark",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/mapuark.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#2089DC"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -23,10 +23,6 @@
       }
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/mapuark.png",
-        "backgroundColor": "#ffffff"
-      },
       "permissions": [
         "android.permission.CAMERA"
       ],
