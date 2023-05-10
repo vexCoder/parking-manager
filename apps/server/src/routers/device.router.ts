@@ -73,6 +73,10 @@ export const deviceRouter = t.router({
     .query(async ({ input, ctx }) => {
       const { client } = ctx;
 
+      if(!input.deviceID) {
+        throw new Error("Device ID is required");
+      }
+
       const device = await client.device.findFirst({
         where: {
           id: input.deviceID,
